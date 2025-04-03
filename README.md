@@ -1,16 +1,19 @@
 # NoteFloat.nvim
 
-A simple Neovim plugin that provides a floating, persistent note-taking window that saves automatically between sessions.
+A sophisticated Neovim plugin that provides floating, persistent note-taking with auto-sync capabilities, multi-window management, and AI-powered note summarization.
 
 ## Features
 
 - **Persistent Notes** - Notes are saved automatically and persist between Neovim sessions
 - **Multiple Categories** - Create different note categories for different purposes (quick notes, TODOs, meeting notes, etc.)
 - **Floating UI** - Clean, non-intrusive floating window with customizable size and border
+- **Auto-save** - Notes save automatically as you type with debounce
+- **Periodic Save** - Additional periodic saving to prevent data loss during crashes
+- **Git Sync** - Automatically commit and push your notes to a Git repository
+- **Note Summarization** - Get AI-powered summaries of your notes (requires OpenAI CLI)
+- **Multi-window Management** - Sidebar to manage and navigate between different note categories
 - **Markdown Support** - Notes are saved as markdown files by default
-- **Auto-save** - Notes save automatically as you type (with customizable debounce)
-- **Lightweight** - Simple implementation with minimal dependencies
-- **Fast** - No performance impact on your editor
+- **Lightweight Core** - Simple implementation with minimal dependencies
 
 ## Installation
 
@@ -18,7 +21,7 @@ A simple Neovim plugin that provides a floating, persistent note-taking window t
 
 ```lua
 {
-  "deveshidwivedi/notefloat.nvim",
+  "yourusername/notefloat.nvim",
   config = function()
     require("notefloat").setup()
   end
@@ -29,7 +32,7 @@ A simple Neovim plugin that provides a floating, persistent note-taking window t
 
 ```lua
 use {
-  "deveshidwivedi/notefloat.nvim",
+  "yourusername/notefloat.nvim",
   config = function()
     require("notefloat").setup()
   end
@@ -40,7 +43,7 @@ use {
 
 ```lua
 later(function()
-  add("deveshidwivedi/notefloat.nvim")
+  add("yourusername/notefloat.nvim")
   require("notefloat").setup()
 end)
 ```
@@ -62,8 +65,32 @@ end)
    ```
 
 3. List and select from available categories:
+
    ```
    :NoteFloatList
+   ```
+
+4. Toggle sidebar for note management:
+
+   ```
+   :NoteFloatSidebar
+   ```
+
+5. Get a summary of your current note:
+
+   ```
+   :NoteFloatSummarize
+   ```
+
+6. Initialize Git repository for syncing:
+
+   ```
+   :NoteFloatGitInit
+   ```
+
+7. Manually sync notes to Git:
+   ```
+   :NoteFloatGitSync
    ```
 
 ### Recommended Keymaps
@@ -85,6 +112,15 @@ vim.keymap.set('n', '<Leader>nc', '<cmd>NoteFloat code<CR>', { desc = 'Toggle co
 
 -- Open category selector
 vim.keymap.set('n', '<Leader>nl', '<cmd>NoteFloatList<CR>', { desc = 'List note categories' })
+
+-- Toggle sidebar
+vim.keymap.set('n', '<Leader>ns', '<cmd>NoteFloatSidebar<CR>', { desc = 'Toggle notes sidebar' })
+
+-- Summarize current note
+vim.keymap.set('n', '<Leader>nz', '<cmd>NoteFloatSummarize<CR>', { desc = 'Summarize note' })
+
+-- Git sync
+vim.keymap.set('n', '<Leader>ng', '<cmd>NoteFloatGitSync<CR>', { desc = 'Sync notes to Git' })
 ```
 
 ## Configuration
@@ -108,10 +144,88 @@ require("notefloat").setup({
   -- Debounce time for auto-save in milliseconds
   debounce_ms = 1000,
 
+  -- Periodic save (for crash protection)
+  periodic_save = true,
+  periodic_save_interval = 60000, -- 1 minute
+
+  -- Git synchronization
+  git_sync = false, -- Disabled by default
+  git_sync_interval = 300000, -- 5 minutes
+  git_sync_message = "Auto-sync NoteFloat notes",
+
+  -- AI summarization
+  summarize_prompt = "Summarize the following note in 3 bullet points:\n\n",
+
+  -- Sidebar configuration
+  sidebar_width = 30,
+
   -- Available note categories
   categories = {"quick", "todo", "code", "meeting", "project"}
 })
 ```
+
+## Advanced Features
+
+### Git Synchronization
+
+To sync your notes with a Git repository:
+
+1. Initialize a Git repository in your notes directory:
+
+   ```
+   :NoteFloatGitInit
+   ```
+
+   This will create a Git repository and prompt you for an optional remote URL.
+
+2. Enable automatic Git sync in your config:
+
+   ```lua
+   require("notefloat").setup({
+     git_sync = true
+   })
+   ```
+
+3. Manually sync at any time:
+   ```
+   :NoteFloatGitSync
+   ```
+
+### AI-Powered Note Summarization
+
+If you have the OpenAI CLI installed and configured, NoteFloat can generate summaries of your notes:
+
+1. Install the OpenAI CLI:
+
+   ```
+   pip install openai
+   ```
+
+2. Configure your API key:
+
+   ```
+   export OPENAI_API_KEY=your_api_key_here
+   ```
+
+3. Summarize your current note:
+   ```
+   :NoteFloatSummarize
+   ```
+
+If the OpenAI CLI is not available, a basic statistical summary will be provided instead.
+
+### Multi-Window Management
+
+Toggle the sidebar to see and switch between different note categories:
+
+```
+:NoteFloatSidebar
+```
+
+In the sidebar:
+
+- Press `Enter` to open the selected note category
+- Press `q` to close the sidebar
 
 ## Storage
 
@@ -119,20 +233,3 @@ Notes are saved in your Neovim data directory:
 
 - Linux: `~/.local/share/nvim/notefloat/`
 - macOS: `~/Library/Application Support/nvim/notefloat/`
-- Windows: `%LOCALAPPDATA%\nvim-data\notefloat\`
-
-Each note category is saved as a separate markdown file.
-
-## Why NoteFloat?
-
-Many developers keep scratch files or temporary notes open while working. NoteFloat makes this process seamless:
-
-- No need to create and manage temporary files
-- Notes persist between sessions and are always accessible with a keystroke
-- Different note categories help organize different types of content
-- The floating window doesn't disrupt your window layout or workflow
-
-## Requirements
-
-- Neovim >= 0.7.0
-- For the title feature: Neovim >= 0.9.0 (optional)
