@@ -21,7 +21,7 @@ A sophisticated Neovim plugin that provides floating, persistent note-taking wit
 
 ```lua
 {
-  "yourusername/notefloat.nvim",
+  "deveshidwivedi/notefloat.nvim",
   config = function()
     require("notefloat").setup()
   end
@@ -32,7 +32,7 @@ A sophisticated Neovim plugin that provides floating, persistent note-taking wit
 
 ```lua
 use {
-  "yourusername/notefloat.nvim",
+  "deveshidwivedi/notefloat.nvim",
   config = function()
     require("notefloat").setup()
   end
@@ -43,7 +43,7 @@ use {
 
 ```lua
 later(function()
-  add("yourusername/notefloat.nvim")
+  add("deveshidwivedi/notefloat.nvim")
   require("notefloat").setup()
 end)
 ```
